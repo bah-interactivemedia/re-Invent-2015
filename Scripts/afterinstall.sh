@@ -1,4 +1,4 @@
 #!/bin/sh
 chown ec2-user /var/www/donorschoose/ -R 
-apt-get update
+yum -y update
 exit 0
