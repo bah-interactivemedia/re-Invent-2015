@@ -86,28 +86,27 @@ $('#results').hide();
     stateHoverStyles: {fill: '#F15E33'},
     click: function(event, data) {
       $('#results').show();
-      $('#clicked-state').text(states[data.name]);
+      $('#clicked-state').text(states[data.name]).data('state', data.name);
     }
   });
 
   $('button#analyzeButton').click(function(){
+    var stateAbbrev = $('#clicked-state').data('state');
     $.ajax({
-      url: "/testdata",
+      url: "/getFundingByResource/" + stateAbbrev,
       context: document.body
     }).done(function(data) {
-      console.log('gotdata');
-
-       $('html, body').animate({scrollTop: 500},'100');
-      console.log(data);
-      var categories = [
-        'Books',
-        'Technology',
-        'Supplies',
-        'Trips & visitors',
-        'Other'
-      ];
-
-      renderSpider("DonorsChoose", categories, data);
+      $('html, body').animate({scrollTop: 500},'100');
+      var series = [{
+            name: 'Total Donations',
+            data: data.donations,
+            pointPlacement: 'on'
+        }, {
+            name: 'Total Requested Donations',
+            data: data.requestedDonations,
+            pointPlacement: 'on'
+        }];
+      renderSpider("DonorsChoose", data.categories, series);
     });
   });
 
@@ -169,11 +168,11 @@ $('#results').hide();
   }
   function demoSpider() {
     var series = [{
-            name: 'Allocated Budget',
+            name: 'Total Donations',
             data: [43000, 19000, 60000, 35000, 17000],
             pointPlacement: 'on'
         }, {
-            name: 'Actual Spending',
+            name: 'Total Requested Donations',
             data: [50000, 39000, 42000, 31000, 26000],
             pointPlacement: 'on'
         }],
