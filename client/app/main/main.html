@@ -79,7 +79,7 @@ $('#results').hide();
     "WV": "West Virginia",
     "WI": "Wisconsin",
     "WY": "Wyoming"
-}
+};
 
   $('#map').usmap({
   // The click action
@@ -106,7 +106,7 @@ $('#results').hide();
             data: data.requestedDonations,
             pointPlacement: 'on'
         }];
-      renderSpider("DonorsChoose", data.categories, series);
+        renderSpider(states[stateAbbrev] + " requests the most funding for " + data.maxRequested + " and receives the most funding for " + data.maxDonated, data.categories, series);
     });
   });
 
