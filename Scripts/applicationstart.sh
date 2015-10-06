@@ -2,8 +2,8 @@
 . ~/.bashrc
 
 cd /var/www/donorschoose/
-npm update --force
-npm install --force
+npm update
+npm install
 bower install
 grunt build --force
 cd /var/www/donorschoose/dist/server
