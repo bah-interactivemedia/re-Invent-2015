@@ -16,11 +16,6 @@ var connection = mysql.createConnection({
 
 connection.connect();
 
-connection.query('SELECT 1 + 1 AS solution', function(err, rows, fields) {
-    if (err) throw err;
-    console.log('The solution is: ', rows[0].solution);
-});
-
 module.exports = function(app) {
 
   // Insert routes below
@@ -51,9 +46,9 @@ module.exports = function(app) {
       res.send(JSON.stringify(testData));
     });
 
-    app.route('/getCitiesByState')
+    app.route('/getCitiesByState/:state')
         .get(function(req, res){
-            connection.query("SELECT DISTINCT school_city FROM projects WHERE school_state = 'VA' ORDER BY school_city ASC;",
+            connection.query("SELECT DISTINCT school_city FROM projects WHERE school_state = '"+ req.params.state + "' ORDER BY school_city ASC;",
                 function(err, rows, fields) {
                     res.send(JSON.stringify(rows));
             });
@@ -67,18 +62,17 @@ module.exports = function(app) {
             });
         });
 
-    app.route('/getFundingByStateByResource')
+    app.route('/getFundingByStateByResource/:state')
         .get(function(req, res){
-            connection.query("SELECT resource_type, SUM(total_donations) AS total_donations, SUM(total_price_excluding_optional_support) AS total_requested_donations FROM projects WHERE school_state = '"+ req.state + "' GROUP BY resource_type;",
+            connection.query("SELECT resource_type, SUM(total_donations) AS total_donations, SUM(total_price_excluding_optional_support) AS total_requested_donations FROM projects WHERE school_state = '"+ req.params.state + "' GROUP BY resource_type;",
                 function(err, rows, fields) {
                     res.send(JSON.stringify(rows));
                 });
         });
 
-    app.route('/getFundingByStateBySubject')
+    app.route('/getFundingByStateBySubject/:state')
         .get(function(req, res){
-            console.log(req);
-            connection.query("SELECT primary_focus_subject, SUM(total_donations) AS total_donations, SUM(total_price_excluding_optional_support) AS total_requested_donations FROM projects WHERE school_state = '"+ req.state + "' GROUP BY primary_focus_subject;",
+            connection.query("SELECT primary_focus_subject, SUM(total_donations) AS total_donations, SUM(total_price_excluding_optional_support) AS total_requested_donations FROM projects WHERE school_state = '"+ req.params.state + "' GROUP BY primary_focus_subject;",
                 function(err, rows, fields) {
                     res.send(JSON.stringify(rows));
                 });
