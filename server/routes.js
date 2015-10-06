@@ -77,7 +77,7 @@ module.exports = function(app) {
                     }
 
                     var response = new Object();
-                    response.resources = resource;
+                    response.cateories = resource;
                     response.donations = totalDonations;
                     response.requestedDonations = totalRequestedDonations;
 
@@ -89,7 +89,22 @@ module.exports = function(app) {
         .get(function(req, res){
             connection.query("SELECT primary_focus_area, SUM(total_donations) AS total_donations, SUM(total_price_excluding_optional_support) AS total_requested_donations FROM projects WHERE school_state = '"+ req.params.state + "' GROUP BY primary_focus_area ORDER BY primary_focus_area;",
                 function(err, rows, fields) {
-                    res.send(JSON.stringify(rows));
+                    var subject = [];
+                    var totalDonations = [];
+                    var totalRequestedDonations = [];
+
+                    for (var i = 0; i < rows.length; i++){
+                        resource.push(rows[i]["primary_focus_area"]);
+                        totalDonations.push(Math.round(rows[i]["total_donations"]));
+                        totalRequestedDonations.push(Math.round(rows[i]["total_requested_donations"]));
+                    }
+
+                    var response = new Object();
+                    response.cateories = subject;
+                    response.donations = totalDonations;
+                    response.requestedDonations = totalRequestedDonations;
+
+                    res.send(JSON.stringify(response));
                 });
         });
 };
