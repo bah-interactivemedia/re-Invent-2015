@@ -62,7 +62,7 @@ module.exports = function(app) {
             });
         });
 
-    app.route('/getFundingByStateByResource/:state')
+    app.route('/getFundingByResource/:state')
         .get(function(req, res){
             connection.query("SELECT resource_type, SUM(total_donations) AS total_donations, SUM(total_price_excluding_optional_support) AS total_requested_donations FROM projects WHERE school_state = '"+ req.params.state + "' GROUP BY resource_type ORDER BY resource_type;",
                 function(err, rows, fields) {
@@ -85,9 +85,55 @@ module.exports = function(app) {
                 });
         });
 
-    app.route('/getFundingByStateBySubject/:state')
+    app.route('/getFundingBySubject/:state')
         .get(function(req, res){
             connection.query("SELECT primary_focus_area, SUM(total_donations) AS total_donations, SUM(total_price_excluding_optional_support) AS total_requested_donations FROM projects WHERE school_state = '"+ req.params.state + "' GROUP BY primary_focus_area ORDER BY primary_focus_area;",
+                function(err, rows, fields) {
+                    var subject = [];
+                    var totalDonations = [];
+                    var totalRequestedDonations = [];
+
+                    for (var i = 0; i < rows.length; i++){
+                        resource.push(rows[i]["primary_focus_area"]);
+                        totalDonations.push(Math.round(rows[i]["total_donations"]));
+                        totalRequestedDonations.push(Math.round(rows[i]["total_requested_donations"]));
+                    }
+
+                    var response = new Object();
+                    response.cateories = subject;
+                    response.donations = totalDonations;
+                    response.requestedDonations = totalRequestedDonations;
+
+                    res.send(response);
+                });
+        });
+
+    app.route('/getFundingByResource/:state/:city')
+        .get(function(req, res){
+            connection.query("SELECT resource_type, SUM(total_donations) AS total_donations, SUM(total_price_excluding_optional_support) AS total_requested_donations FROM projects WHERE school_state = '"+ req.params.state + "' AND school_city = '"+ req.params.city + "' GROUP BY resource_type ORDER BY resource_type;",
+                function(err, rows, fields) {
+                    var resource = [];
+                    var totalDonations = [];
+                    var totalRequestedDonations = [];
+
+                    for (var i = 0; i < rows.length; i++){
+                        resource.push(rows[i]["resource_type"]);
+                        totalDonations.push(Math.round(rows[i]["total_donations"]));
+                        totalRequestedDonations.push(Math.round(rows[i]["total_requested_donations"]));
+                    }
+
+                    var response = new Object();
+                    response.cateories = resource;
+                    response.donations = totalDonations;
+                    response.requestedDonations = totalRequestedDonations;
+
+                    res.send(response);
+                });
+        });
+
+    app.route('/getFundingBySubject/:state/:city')
+        .get(function(req, res){
+            connection.query("SELECT primary_focus_area, SUM(total_donations) AS total_donations, SUM(total_price_excluding_optional_support) AS total_requested_donations FROM projects WHERE school_state = '"+ req.params.state + "' AND school_city = '"+ req.params.city + "' GROUP BY primary_focus_area ORDER BY primary_focus_area;",
                 function(err, rows, fields) {
                     var subject = [];
                     var totalDonations = [];
