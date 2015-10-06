@@ -81,7 +81,7 @@ module.exports = function(app) {
                     response.donations = totalDonations;
                     response.requestedDonations = totalRequestedDonations;
 
-                    res.send(JSON.stringify(response));
+                    res.send(response);
                 });
         });
 
@@ -104,7 +104,7 @@ module.exports = function(app) {
                     response.donations = totalDonations;
                     response.requestedDonations = totalRequestedDonations;
 
-                    res.send(JSON.stringify(response));
+                    res.send(response);
                 });
         });
 };
