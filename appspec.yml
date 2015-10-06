@@ -1,0 +1,16 @@
+version: 0.0
+os: linux
+files:
+  - source: /
+    destination: /var/www/donorschoose
+hooks:
+  BeforeInstall:
+    - location: Scripts/beforeinstall.sh
+      runas: ec2-user
+  AfterInstall:
+    - location: Scripts/afterinstall.sh
+      timeout: 180
+  ApplicationStart:
+    - location: Scripts/applicaitonstart.sh
+      timeout: 3600
+      runas: ec2-user
