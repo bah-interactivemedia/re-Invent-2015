@@ -25,6 +25,15 @@ module.exports = function(app) {
   app.route('/testdata')
     .get(function(req, res){
       res.setHeader('Content-Type', 'application/json');
-      res.send(JSON.stringify({ a: 1 }));
+      var testData = [{
+                      name: 'Allocated Budget',
+                      data: [43000, 19000, 60000, 35000, 17000],
+                      pointPlacement: 'on'
+                  }, {
+                      name: 'Actual Spending',
+                      data: [50000, 39000, 42000, 31000, 26000],
+                      pointPlacement: 'on'
+                  }];
+      res.send(JSON.stringify(testData));
     })
 };
