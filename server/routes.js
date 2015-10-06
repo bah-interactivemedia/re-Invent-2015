@@ -77,7 +77,7 @@ module.exports = function(app) {
                     }
 
                     var response = new Object();
-                    response.cateories = resource;
+                    response.categories = resource;
                     response.donations = totalDonations;
                     response.requestedDonations = totalRequestedDonations;
 
@@ -100,7 +100,7 @@ module.exports = function(app) {
                     }
 
                     var response = new Object();
-                    response.cateories = subject;
+                    response.categories = subject;
                     response.donations = totalDonations;
                     response.requestedDonations = totalRequestedDonations;
 
@@ -123,7 +123,7 @@ module.exports = function(app) {
                     }
 
                     var response = new Object();
-                    response.cateories = resource;
+                    response.categories = resource;
                     response.donations = totalDonations;
                     response.requestedDonations = totalRequestedDonations;
 
@@ -146,7 +146,7 @@ module.exports = function(app) {
                     }
 
                     var response = new Object();
-                    response.cateories = subject;
+                    response.categories = subject;
                     response.donations = totalDonations;
                     response.requestedDonations = totalRequestedDonations;
 
