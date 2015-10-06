@@ -13,22 +13,6 @@ var express = require('express');
 // var mongoose = require('mongoose');
 var config = require('./config/environment');
 
-var mysql      = require('mysql');
-var connection = mysql.createConnection({
-  host     : 'donorchooseaws.cn3nymplw1j0.us-west-2.rds.amazonaws.com',
-  user     : 'root',
-  password : 'password'
-});
-
-connection.connect();
-
-connection.query('SELECT 1 + 1 AS solution', function(err, rows, fields) {
-  if (err) throw err;
-  console.log('The solution is: ', rows[0].solution);
-});
-
-connection.end();
-
 // Connect to database
 // mongoose.connect(config.mongo.uri, config.mongo.options);
 // mongoose.connection.on('error', function(err) {
