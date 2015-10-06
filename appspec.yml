@@ -11,6 +11,6 @@ hooks:
     - location: Scripts/afterinstall.sh
       timeout: 180
   ApplicationStart:
-    - location: Scripts/applicaitonstart.sh
+    - location: Scripts/applicationstart.sh
       timeout: 3600
       runas: ec2-user
