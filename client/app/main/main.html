@@ -1,12 +1,95 @@
 <div ng-include="'components/navbar/navbar.html'"></div>
 
-<header class="hero-unit" id="banner">
+<header class="hero-unit" id="firstQuestion">
   <div class="container">
-    <h1>'Allo, 'Allo!</h1>
-    <p class="lead">Kick-start your next web app with Angular Fullstack</p>
-    <img src="assets/images/yeoman.png" alt="I'm Yeoman">
+    <h3>To help us find you some interesting projects to work on, please fill out some more information.</h3>
+    <p class="lead">Is there a particualar area you are interested in?</p>
+    <div class="row">
+      <div class="col-lg-6">
+        <div id="map"  style="width: 500px; height: 300px; margin-left:auto; margin-right:auto;"></div>
+      </div>
+      <div class="col-lg-6" id="results" style="text-align:left; font-size: 60px;">
+        <div id="clicked-state" style=""></div>
+        <input type="text" class="form-control" placeholder="Text input">
+        <button type="button" class="btn" style="background-color: #EF5F3C;">Analyze the results</button>
+      </div>
+    </div>
   </div>
 </header>
+
+<script>
+$('#results').hide();
+  var states = {
+    "AL": "Alabama",
+    "AK": "Alaska",
+    "AS": "American Samoa",
+    "AZ": "Arizona",
+    "AR": "Arkansas",
+    "CA": "California",
+    "CO": "Colorado",
+    "CT": "Connecticut",
+    "DE": "Delaware",
+    "DC": "District Of Columbia",
+    "FM": "Federated States Of Micronesia",
+    "FL": "Florida",
+    "GA": "Georgia",
+    "GU": "Guam",
+    "HI": "Hawaii",
+    "ID": "Idaho",
+    "IL": "Illinois",
+    "IN": "Indiana",
+    "IA": "Iowa",
+    "KS": "Kansas",
+    "KY": "Kentucky",
+    "LA": "Louisiana",
+    "ME": "Maine",
+    "MH": "Marshall Islands",
+    "MD": "Maryland",
+    "MA": "Massachusetts",
+    "MI": "Michigan",
+    "MN": "Minnesota",
+    "MS": "Mississippi",
+    "MO": "Missouri",
+    "MT": "Montana",
+    "NE": "Nebraska",
+    "NV": "Nevada",
+    "NH": "New Hampshire",
+    "NJ": "New Jersey",
+    "NM": "New Mexico",
+    "NY": "New York",
+    "NC": "North Carolina",
+    "ND": "North Dakota",
+    "MP": "Northern Mariana Islands",
+    "OH": "Ohio",
+    "OK": "Oklahoma",
+    "OR": "Oregon",
+    "PW": "Palau",
+    "PA": "Pennsylvania",
+    "PR": "Puerto Rico",
+    "RI": "Rhode Island",
+    "SC": "South Carolina",
+    "SD": "South Dakota",
+    "TN": "Tennessee",
+    "TX": "Texas",
+    "UT": "Utah",
+    "VT": "Vermont",
+    "VI": "Virgin Islands",
+    "VA": "Virginia",
+    "WA": "Washington",
+    "WV": "West Virginia",
+    "WI": "Wisconsin",
+    "WY": "Wyoming"
+}
+
+  $('#map').usmap({
+  // The click action
+    stateHoverStyles: {fill: '#EF5F3C'},
+    click: function(event, data) {
+      $('#results').show();
+      $('#clicked-state').text('State: '+states[data.name]);
+    }
+  });
+</script>
 
 <div class="container">
   <div class="row">
@@ -15,6 +98,7 @@
       <ul class="nav nav-tabs nav-stacked col-md-4 col-lg-4 col-sm-6" ng-repeat="thing in awesomeThings">
         <li><a href="#" tooltip="{{thing.info}}">{{thing.name}}<button type="button" class="close" ng-click="deleteThing(thing)">&times;</button></a></li>
       </ul>
+
     </div>
   </div>
 
