@@ -7,7 +7,7 @@
       <div class="col-lg-4 col-lg-offset-1">
         <div id="map"  style="width: 500px; height: 300px; margin-left:auto; margin-right:auto;"></div>
       </div>
-      <div class="col-lg-4 col-lg-offset-2" id="results" style="text-align:left; font-size: 60px;">
+      <div class="col-lg-4 col-lg-offset-2" id="results" style="text-align:center; font-size: 60px;">
         <div id="clicked-state" style="margin-top:20px;"></div>
         <!-- <input type="text" class="form-control" placeholder="Text input"> -->
         <div id="selectCityLoad"class="sk-cube-grid" class="hide">
@@ -106,7 +106,7 @@ $("#selectCityLoad").hide();
       $('#clicked-state').text(states[data.name]);
       selectedState = data.name;
 
-      loadStateData(data.name);
+      // loadStateData(data.name);
       loadCitiesForState(data.name);
     }
   });
@@ -185,7 +185,6 @@ $("#selectCityLoad").hide();
   function citySelected(state, city) {
     selectedCity = city;
 
-    $('html,body').animate({ scrollTop: $("#resourceSpider").offset().top });
     $.ajax({
       url: "/getFundingByResource/" + state + "/" + city,
       context: document.body
@@ -202,6 +201,8 @@ $("#selectCityLoad").hide();
         $('#spiderGraphs').show();
         $('#witformContainer').show();
         renderSpider("resourceSpider", "Resource Funding in " + city + ", " + states[state], data.categories, series);
+            $('html,body').animate({ scrollTop: $("#resourceSpider").offset().top });
+
     });
 
     $.ajax({
@@ -344,6 +345,8 @@ $("#selectCityLoad").hide();
           Math.floor((data.barChart.donations[5]-data.barChart.donations[4])/data.barChart.donations[5]*100)]
       }]);
       renderTimeSeriesForCity('#cityLineChart', data.lineGraph.years, donationSeries(data.lineGraph));
+                  $('html,body').animate({ scrollTop: $("#cityLineChart").offset().top });
+
     });
     return false;
     }
@@ -410,6 +413,10 @@ $("#selectCityLoad").hide();
 
   function renderTimeSeriesForCity(container, categories, series) {
     $(container).highcharts({
+      credits: {
+            enabled: false
+        },
+        exporting: { enabled: false },
       title: {
           text: '$ Spent in city over Years',
           x: -20 //center
@@ -430,8 +437,8 @@ $("#selectCityLoad").hide();
       },
       legend: {
           layout: 'vertical',
-          align: 'right',
-          verticalAlign: 'middle',
+          align: 'center',
+          verticalAlign: 'bottom',
           borderWidth: 0
       },
       series: series
