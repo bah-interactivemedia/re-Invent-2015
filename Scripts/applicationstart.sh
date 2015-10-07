@@ -13,7 +13,7 @@ grunt build --force
 cd /var/www/donorschoose/dist/server
 
 echo "Starting NodeJS"
-node app.js >> /home/ec2-user/nodelog.log &
+node app.js >> /home/ec2-user/nodelog.log 2> /dev/null < /dev/null &
 echo "NodeJS started"
 
 cd /var/www/donorschoose/
