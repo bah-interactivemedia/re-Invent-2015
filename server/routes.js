@@ -73,6 +73,66 @@ module.exports = function(app) {
                     res.send(response);
                 });
         });
+    
+   app.route('/getBreakdown/VA/:city')
+        .get(function(req, res){
+            var gnarly_query = "SELECT " + 
+" '" + req.params.city + "' as city," + 
+"  'ENGLISH' as subject," + 
+" (SELECT AVG(ENGLISH) FROM accreditation_rating_virginia_by_school_2014" + 
+" WHERE City = '" + req.params.city + "') as average_subject_city, " + 
+" (SELECT AVG(ENGLISH) FROM accreditation_rating_virginia_by_school_2014) as average_subject_state," + 
+" (" + 
+" (SELECT SUM(total_price_including_optional_support) FROM projects WHERE funding_status = 'completed' AND school_state = 'VA' AND school_city = '" + req.params.city + "'  AND primary_focus_area = 'Literacy & Language') " + 
+"   / " + 
+" (SELECT SUM(total_price_including_optional_support) FROM projects WHERE school_state = 'VA' AND school_city = '" + req.params.city + "'  AND primary_focus_area = 'Literacy & Language')" + 
+" ) as completion_percentage_city," + 
+"  (" + 
+" (SELECT SUM(total_price_including_optional_support) FROM projects WHERE funding_status = 'completed' AND school_state = 'VA' AND primary_focus_area = 'Literacy & Language') " + 
+"   / " + 
+" (SELECT SUM(total_price_including_optional_support) FROM projects WHERE school_state = 'VA' AND primary_focus_area = 'Literacy & Language')" + 
+" ) as completion_percentage_state" + 
+" " + 
+" UNION" + 
+" " + 
+" SELECT " + 
+" '" + req.params.city + "' as city," + 
+"  'MATHEMATICS' as subject," + 
+" (SELECT AVG(MATHEMATICS) FROM accreditation_rating_virginia_by_school_2014" + 
+" WHERE City = '" + req.params.city + "') as average_subject_city, " + 
+" (SELECT AVG(MATHEMATICS) FROM accreditation_rating_virginia_by_school_2014) as average_subject_state," + 
+" (" + 
+" (SELECT SUM(total_price_including_optional_support) FROM projects WHERE funding_status = 'completed' AND school_state = 'VA' AND school_city = '" + req.params.city + "' AND primary_focus_area = 'Math & Science') " + 
+"   / " + 
+" (SELECT SUM(total_price_including_optional_support) FROM projects WHERE school_state = 'VA' AND school_city = '" + req.params.city + "' AND primary_focus_area = 'Math & Science')" + 
+" ) as completion_percentage_city," + 
+"  (" + 
+" (SELECT SUM(total_price_including_optional_support) FROM projects WHERE funding_status = 'completed' AND school_state = 'VA' AND primary_focus_area = 'Math & Science' ) " + 
+"   / " + 
+" (SELECT SUM(total_price_including_optional_support) FROM projects WHERE school_state = 'VA' AND primary_focus_area = 'Math & Science')" + 
+" ) as completion_percentage_state" + 
+";" 
+ 
+            connection.query( gnarly_query,
+                function(err, rows, fields) {
+                    var resource = [];
+
+                    var response = new Object();
+                    response.english = new Object();
+                    response.mathematics = new Object();
+                    response.english.average_subject_city = rows[0]["average_subject_city"];
+                    response.english.average_subject_state = rows[0]["average_subject_state"];
+                    response.english.completion_percentage_city = rows[0]["completion_percentage_city"];
+                    response.english.completion_percentage_state = rows[0]["completion_percentage_state"];
+                    
+                    response.mathematics.average_subject_city = rows[1]["average_subject_city"];
+                    response.mathematics.average_subject_state = rows[1]["average_subject_state"];
+                    response.mathematics.completion_percentage_city = rows[1]["completion_percentage_city"];
+                    response.mathematics.completion_percentage_state = rows[1]["completion_percentage_state"];
+
+                    res.send(response);
+                });
+        });
 
     app.route('/getFundingBySubject/:state')
         .get(function(req, res){
