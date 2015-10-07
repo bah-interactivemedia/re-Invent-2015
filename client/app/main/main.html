@@ -322,6 +322,7 @@
         'state': selectedState,
         'city': selectedCity}
     }).done(function(data){
+      console.log(data);
       console.log('getting information');
 
       renderStackedBar('test', "Spending at different levels",['City', 'State', 'National'], [{
@@ -330,7 +331,7 @@
       }, {
           name: 'Other Subjects',
           data: [20, 30, 25]
-      },]);
+      }]);
     });
     return false;
     }

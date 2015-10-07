@@ -163,38 +163,39 @@ module.exports = function(app) {
               var i;
               var entity;
 
+              console.log(entities);
+
               if (witIntent == 'subject') {
-                  if (entities.Math_Science !== null) {
+                  if (entities.Math_Science) {
                       entity = entities.Math_Science[0].value;
-                  } else if (entities.Applied_Learning !== null) {
+                  } else if (entities.Applied_Learning) {
                       entity = entities.Applied_Learning[0].value;
-                  } else if (entities.Health_Sports !== null) {
+                  } else if (entities.Health_Sports) {
                       entity = entities.Health_Sports[0].value;
-                  } else if (entities.History_Civics !== null) {
+                  } else if (entities.History_Civics) {
                       entity = entities.History_Civics[0].value;
-                  } else if (entities.Literacy_Language !== null) {
+                  } else if (entities.Literacy_Language) {
                       entity = entities.Literacy_Language[0].value;
-                  } else if (entities.Music_The_Arts !== null) {
+                  } else if (entities.Music_The_Arts) {
                       entity = entities.Music_The[0].value;
-                  } else if (entities.Special_Needs !== null) {
+                  } else if (entities.Special_Needs) {
                       entity = entities.Special_Needs[0].value;
                   }
               } else {
-                  if (entities.Books !== null) {
+                  if (entities.Books) {
                       entity = entities.Books[0].value;
-                  } else if (entities.Other !== null) {
+                  } else if (entities.Other) {
                       entity = entities.Other[0].value;
-                  } else if (entities.Supplies !== null) {
+                  } else if (entities.Supplies) {
                       entity = entities.Supplies[0].value;
-                  } else if (entities.Technology !== null) {
+                  } else if (entities.Technology) {
                       entity = entities.Technology[0].value;
-                  } else if (entities.Trips !== null) {
+                  } else if (entities.Trips) {
                       entity = entities.Trips[0].value;
-                  } else if (entities.Visitors !== null) {
+                  } else if (entities.Visitors) {
                       entity = entities.Visitors[0].value;
                   }
               }
-
 
               // Metrics
               var state = req.body.state;
@@ -205,17 +206,29 @@ module.exports = function(app) {
 
               var queryString;
               if (witIntent == 'subject'){
-                  queryString = "SELECT SUM(total_donations) as total_donations, SUM(total_price_excluding_optional_support) as total_requested_donations FROM projects WHERE school_state = '" + state + "' AND school_city = '" + city + "' AND primary_focus_area LIKE '%" + entity + "%'"+
-                  " UNION "+
-                  "SELECT SUM(total_donations) as total_donations, SUM(total_price_excluding_optional_support) as total_requested_donations FROM projects WHERE school_state = '" + state + "' AND primary_focus_area LIKE '%" + entity + "%'"+
-                  " UNION "+
-                  "SELECT SUM(total_donations) as total_donations, SUM(total_price_excluding_optional_support) as total_requested_donations FROM projects WHERE primary_focus_area LIKE '%" + entity + "%';"
-              } else {
-                  queryString = "SELECT SUM(total_donations) as total_donations, SUM(total_price_excluding_optional_support) as total_requested_donations FROM projects WHERE school_state = '" + state + "' AND school_city = '" + city + "' AND resource_type LIKE '%" + entity + "%'"+
-                  " UNION "+
-                  "SELECT SUM(total_donations) as total_donations, SUM(total_price_excluding_optional_support) as total_requested_donations FROM projects WHERE school_state = '" + state + "' AND resource_type LIKE '%" + entity + "%'"+
-                  " UNION "+
-                  "SELECT SUM(total_donations) as total_donations, SUM(total_price_excluding_optional_support) as total_requested_donations FROM projects WHERE resource_type LIKE '%" + entity + "%';"
+                  queryString = "SELECT SUM(total_donations) as total_donations FROM projects WHERE school_state = '" + state + "' AND school_city = '" + city + "' AND primary_focus_area LIKE '%" + entity + "%'"+
+                    " UNION "+
+                    "SELECT SUM(total_donations) as total_donations FROM projects WHERE school_state = '" + state + "' AND school_city = '" + city + "'"+
+                    " UNION "+
+                    "SELECT SUM(total_donations) as total_donations FROM projects WHERE school_state = '" + state + "' AND primary_focus_area LIKE '%" + entity + "%'"+
+                    " UNION "+
+                    "SELECT SUM(total_donations) as total_donations FROM projects WHERE school_state = '" + state + "'"+
+                    " UNION "+
+                    "SELECT SUM(total_donations) as total_donations FROM projects WHERE primary_focus_area LIKE '%" + entity + "%'"+
+                    " UNION "+
+                    "SELECT SUM(total_donations) as total_donations FROM projects;";
+                  } else {
+                  queryString = "SELECT SUM(total_donations) as total_donations FROM projects WHERE school_state = '" + state + "' AND school_city = '" + city + "' AND resource_type LIKE '%" + entity + "%'"+
+                      " UNION "+
+                      "SELECT SUM(total_donations) as total_donations FROM projects WHERE school_state = '" + state + "' AND school_city = '" + city + "'"+
+                      " UNION "+
+                      "SELECT SUM(total_donations) as total_donations FROM projects WHERE school_state = '" + state + "' AND resource_type LIKE '%" + entity + "%'"+
+                      " UNION "+
+                      "SELECT SUM(total_donations) as total_donations FROM projects WHERE school_state = '" + state + "'"+
+                      " UNION "+
+                      "SELECT SUM(total_donations) as total_donations FROM projects WHERE resource_type LIKE '%" + entity + "%'"+
+                      " UNION "+
+                      "SELECT SUM(total_donations) as total_donations FROM projects;";
               }
 
               console.log(queryString);
@@ -228,11 +241,9 @@ module.exports = function(app) {
 
                       for (var i = 0; i < rows.length; i++){
                           totalDonations.push(Math.round(rows[i]["total_donations"]));
-                          totalRequestedDonations.push(Math.round(rows[i]["total_requested_donations"]));
                       }
 
                       barChart.donations = totalDonations;
-                      barChart.requestedDonations = totalRequestedDonations;
                       response.barChart = barChart;
                       console.log(barChart);
 
@@ -254,6 +265,8 @@ module.exports = function(app) {
                               lineGraph.requestedDonations = totalRequestedDonations;
                               response.lineGraph = lineGraph;
                               console.log(lineGraph);
+
+                              response.subject = entity;
 
                               res.send(response);
                           });
