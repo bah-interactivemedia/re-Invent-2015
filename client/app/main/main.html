@@ -273,10 +273,85 @@
       console.log('getting information');
     });
     return false;
-  }
-});
+    }
+  });
+
+  renderStackedBar(,"Spending across levels", ['Local', 'State', 'National'], [{
+            name: 'John',
+            data: [5, 3, 4]
+        }, {
+            name: 'Jane',
+            data: [2, 2, 3]
+        }, {
+            name: 'Joe',
+            data: [3, 4, 4]
+        }]);
+
+  function renderStackedBar(id, title, categories, series) {
+    $('#stackedBar').highcharts({
+        credits: {
+            enabled: false
+        },
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: 'Stacked column chart'
+        },
+        xAxis: {
+            categories:
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'Total fruit consumption'
+            },
+            stackLabels: {
+                enabled: true,
+                style: {
+                    fontWeight: 'bold',
+                    color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+                }
+            }
+        },
+        legend: {
+            align: 'right',
+            x: -30,
+            verticalAlign: 'top',
+            y: 25,
+            floating: true,
+            backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
+            borderColor: '#CCC',
+            borderWidth: 1,
+            shadow: false
+        },
+        tooltip: {
+            headerFormat: '<b>{point.x}</b><br/>',
+            pointFormat: '{series.name}: {point.y}<br/>Total: {point.stackTotal}'
+        },
+        plotOptions: {
+            column: {
+                stacking: 'normal',
+                dataLabels: {
+                    enabled: true,
+                    color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
+                    style: {
+                        textShadow: '0 0 3px black'
+                    }
+                }
+            }
+        },
+        series: series
+    });
+}
+
 </script>
 
+<div class="container">
+  <div class="row">
+    <div id="stackedBar" class="col-md-6 columns"></div>
+  </div>
+</div>
 <footer class="footer">
   <div class="container">
       <p>Team 17<strong>38</strong> | AWS Re:Invent 2015 |
