@@ -16,7 +16,7 @@ var connection = mysql.createConnection({
 
 connection.connect();
 
-  var wit = require('node-wit');
+var wit = require('node-wit');
 
 module.exports = function(app) {
 
@@ -147,6 +147,8 @@ module.exports = function(app) {
                 });
         });
 
+    /**** WIT ****/
+
     app.route('/witcall')
         .post(function(req,res){
           console.log("Sending text & audio to Wit.AI");
@@ -156,12 +158,62 @@ module.exports = function(app) {
               if (err) console.log("Error: ", err);
               var results = JSON.stringify(res, null, " ");
 
-              var intent = res.outcomes[0].intent;
-              console.log("intent: "+ intent);
+              var witIntent = res.outcomes[0].intent;
+              console.log("intent: "+ witIntent);
 
               console.log(JSON.stringify(res.outcomes[0].entities));
+
+
+              // Metrics
+              var state = req.body.state;
+              var city = req.body.city;
+
+              var barChart = {};
+              var lineGraph = {};
+
+              // Bar chart
+              connection.query("SELECT SUM(total_donations) as total_donations, SUM(total_price_excluding_optional_support) as total_requested_donations FROM projects WHERE school_state = '" + state + "' AND school_city = " + city + " AND primary_focus_area = '" + witIntent + "'"+
+               "UNION"+
+               "SELECT SUM(total_donations) as total_donations, SUM(total_price_excluding_optional_support) as total_requested_donations FROM projects WHERE school_state = '" + state + "' AND primary_focus_area = '" + witIntent + "'"+
+               "UNION"+
+               "SELECT SUM(total_donations) as total_donations, SUM(total_price_excluding_optional_support) as total_requested_donations FROM projects WHERE primary_focus_area = '" + witIntent + "';",
+                  function(err, rows, fields) {
+                      var totalDonations = [];
+                      var totalRequestedDonations = [];
+
+                      for (var i = 0; i < rows.length; i++){
+                          totalDonations.push(Math.round(rows[i]["total_donations"]));
+                          totalRequestedDonations.push(Math.round(rows[i]["total_requested_donations"]));
+                      }
+
+                      barChart.donations = totalDonations;
+                      barChart.requestedDonations = totalRequestedDonations;
+                  });
+
+              // Line chart
+              connection.query("SELECT SUM(total_donations) as total_donations, SUM(total_price_excluding_optional_support) as total_requested_donations, year(date_posted) as projectYear FROM projects WHERE school_state = '"+ state + "' AND school_city = '"+ city + "' GROUP BY year(date_posted);",
+                  function(err, rows, fields) {
+                      var year = [];
+                      var totalDonations = [];
+                      var totalRequestedDonations = [];
+
+                      for (var i = 0; i < rows.length; i++) {
+                          year.push(rows[i]["projectYear"]);
+                          totalDonations.push(Math.round(rows[i]["total_donations"]));
+                          totalRequestedDonations.push(Math.round(rows[i]["total_requested_donations"]));
+                      }
+
+                      lineGraph.years = year;
+                      lineGraph.donations = totalDonations;
+                      lineGraph.requestedDonations = totalRequestedDonations;
+                  });
+
+              var response = {};
+
+              response.barChart = barChart;
+              response.lineGraph = lineGraph;
           });
 
-          res.send('done');
-        })
+            res.send(response);
+        });
 };
