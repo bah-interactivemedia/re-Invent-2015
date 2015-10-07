@@ -15,7 +15,6 @@ var connection = mysql.createConnection({
 });
 
 connection.connect();
-
 module.exports = function(app) {
 
   // Insert routes below
@@ -217,4 +216,10 @@ module.exports = function(app) {
                     res.send(response);
                 });
         });
+
+    app.route('/witcall')
+        .post(function(req,res){
+          console.log(req.body.input);
+
+        })
 };
