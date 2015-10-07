@@ -11,14 +11,15 @@
       <div class="col-lg-6" id="results" style="text-align:left; font-size: 60px;">
         <div id="clicked-state" style=""></div>
         <!-- <input type="text" class="form-control" placeholder="Text input"> -->
-        <button id="analyzeButton" type="button" class="btn">Analyze the results</button>
+        <div id="cities" class="hide">
+          <select id="selectCity"></select>
+        </div>
       </div>
     </div>
   </div>
 </header>
 
 <script>
-$('#results').hide();
   var states = {
     "AL": "Alabama",
     "AK": "Alaska",
@@ -85,19 +86,17 @@ $('#results').hide();
   // The click action
     stateHoverStyles: {fill: '#F15E33'},
     click: function(event, data) {
-      $('#results').show();
-      $('#clicked-state').text(states[data.name]).data('state', data.name);
+      $('#clicked-state').text(states[data.name]);
+      loadStateData(data.name);
+      loadCitiesForState(data.name);
     }
   });
 
-  $('button#analyzeButton').click(function(){
-    var stateAbbrev = $('#clicked-state').data('state');
-
+  function loadStateData(state) {
     $.ajax({
-      url: "/getFundingByResource/" + stateAbbrev,
+      url: "/getFundingByResource/" + state,
       context: document.body
     }).done(function(data) {
-      $('html, body').animate({scrollTop: 500},'100');
       var series = [{
             name: 'Total Donations',
             data: data.donations,
@@ -107,11 +106,11 @@ $('#results').hide();
             data: data.requestedDonations,
             pointPlacement: 'on'
         }];
-        renderSpider("resourceSpider", states[stateAbbrev] + " funding by Resources", data.categories, series);
+        renderSpider("resourceSpider", states[state] + " funding by Resources", data.categories, series);
     });
 
     $.ajax({
-      url: "/getFundingBySubject/" + stateAbbrev,
+      url: "/getFundingBySubject/" + state,
       context: document.body
     }).done(function(data) {
       var series = [{
@@ -123,9 +122,24 @@ $('#results').hide();
         data: data.requestedDonations,
         pointPlacement: 'on'
       }];
-      renderSpider("subjectSpider", states[stateAbbrev] + " funding by Subjects", data.categories, series);
+      renderSpider("subjectSpider", states[state] + " funding by Subjects", data.categories, series);
     });
-  });
+  }
+
+  function loadCitiesForState(state) {
+    $.ajax({
+      url: "/getCitiesByState/" + state,
+      context: document.body
+    }).done(function(data) {
+      $('#selectCity').selectize({
+        options: data,
+        labelField: 'school_city',
+        valueField: 'school_city',
+        searchField: 'school_city'
+      });
+      $('#cities').removeClass('hide');
+    });
+  }
 
   function renderSpider(id, title, categories, series) {
     $("#"+id).highcharts({
