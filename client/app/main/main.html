@@ -16,8 +16,6 @@
       </div>
     </div>
   </div>
-
-
 </header>
 
 <script>
@@ -81,7 +79,9 @@
     "WV": "West Virginia",
     "WI": "Wisconsin",
     "WY": "Wyoming"
-},
+};
+
+  selectedState = null;
   selectedCity = null;
 
   $('#map').usmap({
@@ -90,6 +90,7 @@
     stateHoverStyles: {fill: '#F15E33'},
     click: function(event, data) {
       $('#clicked-state').text(states[data.name]);
+      selectedState = data.name;
       loadStateData(data.name);
       loadCitiesForState(data.name);
     }
@@ -150,6 +151,7 @@
   }
 
   function citySelected(state, city) {
+    selectedCity = city;
     $('html,body').animate({ scrollTop: $("#resourceSpider").offset().top });
     $.ajax({
       url: "/getFundingByResource/" + state + "/" + city,
@@ -268,7 +270,9 @@
     $.ajax({
       type: "POST",
       url: "witcall",
-      data: {'input' :$('input#witform').val()}
+      data: {'input' :$('input#witform').val(),
+        'state': selectedState,
+        'city': selectedCity}
     }).done(function(data){
       console.log('getting information');
     });
