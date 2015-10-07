@@ -106,7 +106,7 @@
             data: data.requestedDonations,
             pointPlacement: 'on'
         }];
-        renderSpider("resourceSpider", states[state] + " funding by Resources", data.categories, series);
+        renderSpider("resourceSpider", "Resource Funding", data.categories, series);
     });
 
     $.ajax({
@@ -122,7 +122,7 @@
         data: data.requestedDonations,
         pointPlacement: 'on'
       }];
-      renderSpider("subjectSpider", states[state] + " funding by Subjects", data.categories, series);
+      renderSpider("subjectSpider", "Subject Funding", data.categories, series);
     });
   }
 
@@ -227,7 +227,7 @@
 
 <footer class="footer">
   <div class="container">
-      <p>Team38 | AWS Re:Invent 2015 |
+      <p>Team 17<strong>38</strong> | AWS Re:Invent 2015 |
          <a href="https://github.com/bah-interactivemedia/re-Invent-2015/issues?state=open">Issues</a></p>
   </div>
 </footer>

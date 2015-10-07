@@ -31,21 +31,6 @@ module.exports = function(app) {
       res.sendFile(path.resolve(app.get('appPath') + '/index.html'));
     });
 
-  app.route('/testdata')
-    .get(function(req, res){
-      res.setHeader('Content-Type', 'application/json');
-      var testData = [{
-                      name: 'Allocated Budget',
-                      data: [43000, 19000, 60000, 35000, 17000],
-                      pointPlacement: 'on'
-                  }, {
-                      name: 'Actual Spending',
-                      data: [50000, 39000, 42000, 31000, 26000],
-                      pointPlacement: 'on'
-                  }];
-      res.send(JSON.stringify(testData));
-    });
-
     app.route('/getCitiesByState/:state')
         .get(function(req, res){
             connection.query("SELECT DISTINCT school_city FROM projects WHERE school_state = '"+ req.params.state + "' ORDER BY school_city ASC;",
@@ -58,9 +43,11 @@ module.exports = function(app) {
         .get(function(req, res){
             connection.query("SELECT SUM(total_donations) as total_donations, SUM(total_price_excluding_optional_support) as total_requested_donations FROM projects;",
                 function(err, rows, fields) {
-                    res.send(JSON.stringify(rows));
+                    res.send(rows);
             });
         });
+
+    /**** STATE ROUTES ****/
 
     app.route('/getFundingByResource/:state')
         .get(function(req, res){
@@ -107,6 +94,8 @@ module.exports = function(app) {
                     res.send(response);
                 });
         });
+
+    /**** CITY ROUTES ****/
 
     app.route('/getFundingByResource/:state/:city')
         .get(function(req, res){
