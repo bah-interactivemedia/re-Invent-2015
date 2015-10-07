@@ -343,7 +343,7 @@ $("#selectCityLoad").hide();
           Math.floor((data.barChart.donations[3]-data.barChart.donations[2])/data.barChart.donations[3]*100),
           Math.floor((data.barChart.donations[5]-data.barChart.donations[4])/data.barChart.donations[5]*100)]
       }]);
-      renderTimeSeriesForCity('#cityLineChart', data.lineGraph.years, donationSeries(data.lineGraph));
+      renderTimeSeriesForCity('#cityLineChart', data.subject, data.lineGraph.years, donationSeries(data.lineGraph));
     });
     return false;
     }
@@ -408,22 +408,23 @@ $("#selectCityLoad").hide();
     });
   }
 
-  function renderTimeSeriesForCity(container, categories, series) {
+  function renderTimeSeriesForCity(container, subject, categories, series) {
     $(container).highcharts({
       title: {
-          text: '$ Spent in city over Years',
+          text: 'Donations for <strong>'+ subject +'</strong> in ' + selectedCity + ', ' + selectedState,
           x: -20 //center
       },
       xAxis: { categories: categories },
       yAxis: {
           title: {
-              text: 'Money Spent ($)'
+              text: 'Dollars'
           },
           plotLines: [{
               value: 0,
               width: 1,
               color: '#808080'
-          }]
+          }],
+          min: 0
       },
       tooltip: {
           valueSuffix: '$'
