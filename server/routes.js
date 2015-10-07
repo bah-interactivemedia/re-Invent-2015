@@ -269,4 +269,12 @@ module.exports = function(app) {
                   });
           });
         });
+
+    app.route('/getTestScoresBy/:state')
+        .get(function(req, res){
+            connection.query("SELECT * FROM act_by_state_2014 WHERE State = '" + req.params.state + "';",
+                function(err, rows, fields) {
+                    res.send(rows);
+                });
+        });
 };
