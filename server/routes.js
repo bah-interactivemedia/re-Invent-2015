@@ -15,6 +15,9 @@ var connection = mysql.createConnection({
 });
 
 connection.connect();
+
+  var wit = require('node-wit');
+
 module.exports = function(app) {
 
   // Insert routes below
@@ -146,7 +149,19 @@ module.exports = function(app) {
 
     app.route('/witcall')
         .post(function(req,res){
-          console.log(req.body.input);
+          console.log("Sending text & audio to Wit.AI");
+
+          wit.captureTextIntent("E5YTJGTEAX5GJH6WHT42AFK6JYZYREDP", req.body.input, function (err, res) {
+              console.log("Response from Wit for text input: ");
+              if (err) console.log("Error: ", err);
+              var results = JSON.stringify(res, null, " ");
+
+              var intent = res.outcomes[0].intent;
+              console.log("intent: "+ intent);
+
+              console.log(JSON.stringify(res.outcomes[0].entities));
+          });
+
 
         })
 };

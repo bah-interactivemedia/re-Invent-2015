@@ -256,7 +256,6 @@
 <script>
   $('input#witform').keypress(function (e) {
   if (e.which == 13) {
-    console.log("i need to submit to the backend");
     $.ajax({
       type: "POST",
       url: "witcall",
