@@ -108,6 +108,18 @@ $("#selectCityLoad").hide();
     }
   });
 
+  function donationSeries(data) {
+    return [{
+      name: 'Donations Received',
+      data: data.donations,
+      pointPlacement: 'on'
+    }, {
+      name: 'Donations Requested',
+      data: data.requestedDonations,
+      pointPlacement: 'on'
+    }];
+  }
+
   function loadStateData(state) {
     $('#cities').addClass('hide');
     $("#selectCityLoad").show();
@@ -190,15 +202,7 @@ $("#selectCityLoad").hide();
       url: "/getFundingBySubject/" + state + "/" + city,
       context: document.body
     }).done(function(data) {
-      var series = [{
-        name: 'Donations Received',
-        data: data.donations,
-        pointPlacement: 'on'
-      }, {
-        name: 'Donations Requested',
-        data: data.requestedDonations,
-        pointPlacement: 'on'
-      }];
+      var series = donationSeries(data);
       renderSpider("subjectSpider", "Subject Funding in " + city + ", " + states[state], data.categories, series);
     });
   }
@@ -263,6 +267,46 @@ $("#selectCityLoad").hide();
 
       series: series
     });
+
+    function loadSpendingForCity(city) {
+      $.post({
+        url: "/witcall/",
+        context: document.body
+      }).done(function(data) {
+        var series = donationSeries(data);
+        renderTimeSeriesForCity('#city-spend-over-time', data.categories, series);
+      });
+    }
+
+    function renderTimeSeriesForCity(container, categories, series) {
+      $(container).highcharts({
+        title: {
+            text: '$ Spent over Years',
+            x: -20 //center
+        },
+        xAxis: { categories: categories },
+        yAxis: {
+            title: {
+                text: 'Money Spent ($)'
+            },
+            plotLines: [{
+                value: 0,
+                width: 1,
+                color: '#808080'
+            }]
+        },
+        tooltip: {
+            valueSuffix: '$'
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle',
+            borderWidth: 0
+        },
+        series: series
+    });
+    }
   }
 </script>
 
@@ -310,10 +354,21 @@ $("#selectCityLoad").hide();
       url: "witcall",
       data: {'input' :$('input#witform').val()}
     }).done(function(data){
+
       $('#witLoad').hide();
+
+
+
+      console.log(data);
       console.log('getting information');
 
-
+      renderStackedBar('test', "Spending at different levels",['City', 'State', 'National'], [{
+          name: 'Math',
+          data: [80, 70, 75]
+      }, {
+          name: 'Other Subjects',
+          data: [20, 30, 25]
+      }]);
     });
     return false;
     }
