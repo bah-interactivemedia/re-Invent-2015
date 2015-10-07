@@ -187,6 +187,10 @@
   function renderSpider(id, title, categories, series) {
     $("#witformContainer").show();
     $("#"+id).highcharts({
+      credits: {
+            enabled: false
+        },
+        exporting: { enabled: false },
       chart: {
         polar: true,
         type: 'line'
@@ -271,27 +275,27 @@
       data: {'input' :$('input#witform').val()}
     }).done(function(data){
       console.log('getting information');
+
+      renderStackedBar('test', "Spending at different levels",['City', 'State', 'National'], [{
+          name: 'Math',
+          data: [80, 70, 75]
+      }, {
+          name: 'Other Subjects',
+          data: [20, 30, 25]
+      },]);
     });
     return false;
     }
   });
 
-  renderStackedBar(,"Spending across levels", ['Local', 'State', 'National'], [{
-            name: 'John',
-            data: [5, 3, 4]
-        }, {
-            name: 'Jane',
-            data: [2, 2, 3]
-        }, {
-            name: 'Joe',
-            data: [3, 4, 4]
-        }]);
+
 
   function renderStackedBar(id, title, categories, series) {
     $('#stackedBar').highcharts({
         credits: {
             enabled: false
         },
+        exporting: { enabled: false },
         chart: {
             type: 'column'
         },
@@ -299,7 +303,7 @@
             text: 'Stacked column chart'
         },
         xAxis: {
-            categories:
+            categories: categories
         },
         yAxis: {
             min: 0,

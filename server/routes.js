@@ -162,6 +162,6 @@ module.exports = function(app) {
               console.log(JSON.stringify(res.outcomes[0].entities));
           });
 
-
+          res.send('done');
         })
 };
