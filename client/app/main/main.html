@@ -374,12 +374,6 @@ $("#selectCityLoad").hide();
             Math.floor(data.barChart.donations[0]/data.barChart.donations[1]*100)+1,
             Math.floor(data.barChart.donations[2]/data.barChart.donations[3]*100)+1,
             Math.floor(data.barChart.donations[4]/data.barChart.donations[5]*100)+1]
-      }, {
-          name: 'Other Subjects',
-          data: [
-          Math.floor((data.barChart.donations[1]-data.barChart.donations[0])/data.barChart.donations[1]*100),
-          Math.floor((data.barChart.donations[3]-data.barChart.donations[2])/data.barChart.donations[3]*100),
-          Math.floor((data.barChart.donations[5]-data.barChart.donations[4])/data.barChart.donations[5]*100)]
       }]);
 
 
