@@ -102,11 +102,11 @@
       context: document.body
     }).done(function(data) {
       var series = [{
-            name: 'Total Donations',
+            name: 'Donations Received',
             data: data.donations,
             pointPlacement: 'on'
         }, {
-            name: 'Total Requested Donations',
+            name: 'Donations Requested',
             data: data.requestedDonations,
             pointPlacement: 'on'
         }];
@@ -118,11 +118,11 @@
       context: document.body
     }).done(function(data) {
       var series = [{
-        name: 'Total Donations',
+        name: 'Donations Received',
         data: data.donations,
         pointPlacement: 'on'
       }, {
-        name: 'Total Requested Donations',
+        name: 'Donations Requested',
         data: data.requestedDonations,
         pointPlacement: 'on'
       }];
@@ -150,20 +150,21 @@
   }
 
   function citySelected(state, city) {
+    $('html,body').animate({ scrollTop: $("#resourceSpider").offset().top });
     $.ajax({
       url: "/getFundingByResource/" + state + "/" + city,
       context: document.body
     }).done(function(data) {
       var series = [{
-            name: 'Total Donations',
+            name: 'Donations Received',
             data: data.donations,
             pointPlacement: 'on'
         }, {
-            name: 'Total Requested Donations',
+            name: 'Donations Requested',
             data: data.requestedDonations,
             pointPlacement: 'on'
         }];
-        renderSpider("resourceSpider", states[state] + " funding by Resources", data.categories, series);
+        renderSpider("resourceSpider", "Resource Funding in " + city + ", " + states[state], data.categories, series);
     });
 
     $.ajax({
@@ -171,19 +172,20 @@
       context: document.body
     }).done(function(data) {
       var series = [{
-        name: 'Total Donations',
+        name: 'Donations Received',
         data: data.donations,
         pointPlacement: 'on'
       }, {
-        name: 'Total Requested Donations',
+        name: 'Donations Requested',
         data: data.requestedDonations,
         pointPlacement: 'on'
       }];
-      renderSpider("subjectSpider", states[state] + " funding by Subjects", data.categories, series);
+      renderSpider("subjectSpider", "Subject Funding in " + city + ", " + states[state], data.categories, series);
     });
   }
 
   function renderSpider(id, title, categories, series) {
+    $("#witformContainer").show();
     $("#"+id).highcharts({
       chart: {
         polar: true,
@@ -240,14 +242,21 @@
   }
 </script>
 
-<div  style="background-color:#333745">
+<div class="container">
+  <div class="row">
+    <div id="resourceSpider" class="col-md-6 columns"></div>
+    <div id="subjectSpider" class="col-md-6 columns"></div>
+  </div>
+</div>
+
+<div style="background-color:#333745; display:none;" id="witformContainer">
   <div class="container" style="text-align:center">
     <div class="row" style="color:white; margin-top: 20px;">
-    <h2>Tell us what topic areas are you interested in:</h2>
+    <h2>What topics are you interested in learning more about?</h2>
     </div>
     <div class="row">
       <div class="col-lg-10 col-lg-offset-1">
-          <input id="witform"type="text" class="form-control" id="exampleInputEmail1" placeholder="Type a question" style="height:50px; border-radius:0px; font-size:26px; margin-bottom: 20px;">
+          <input id="witform" type="text" class="form-control" id="exampleInputEmail1" placeholder="Ex. I want to learn more about math" style="height:50px; border-radius:0px; font-size:26px; margin-bottom: 20px;">
       </div>
     </div>
   </div>
@@ -268,13 +277,6 @@
   }
 });
 </script>
-
-<div class="container">
-  <div class="row">
-    <div id="resourceSpider" class="col-md-6 columns"></div>
-    <div id="subjectSpider" class="col-md-6 columns"></div>
-  </div>
-</div>
 
 <footer class="footer">
   <div class="container">
