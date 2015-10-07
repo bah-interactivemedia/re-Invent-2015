@@ -77,41 +77,41 @@ module.exports = function(app) {
    app.route('/getBreakdown/VA/:city')
         .get(function(req, res){
             var gnarly_query = "SELECT " + 
-" '" + req.params.city + "' as city," + 
-"  'ENGLISH' as subject," + 
-" (SELECT AVG(ENGLISH) FROM accreditation_rating_virginia_by_school_2014" + 
-" WHERE City = '" + req.params.city + "') as average_subject_city, " + 
-" (SELECT AVG(ENGLISH) FROM accreditation_rating_virginia_by_school_2014) as average_subject_state," + 
-" (" + 
-" (SELECT SUM(total_price_including_optional_support) FROM projects WHERE funding_status = 'completed' AND school_state = 'VA' AND school_city = '" + req.params.city + "'  AND primary_focus_area = 'Literacy & Language') " + 
-"   / " + 
-" (SELECT SUM(total_price_including_optional_support) FROM projects WHERE school_state = 'VA' AND school_city = '" + req.params.city + "'  AND primary_focus_area = 'Literacy & Language')" + 
-" ) as completion_percentage_city," + 
-"  (" + 
-" (SELECT SUM(total_price_including_optional_support) FROM projects WHERE funding_status = 'completed' AND school_state = 'VA' AND primary_focus_area = 'Literacy & Language') " + 
-"   / " + 
-" (SELECT SUM(total_price_including_optional_support) FROM projects WHERE school_state = 'VA' AND primary_focus_area = 'Literacy & Language')" + 
-" ) as completion_percentage_state" + 
-" " + 
-" UNION" + 
-" " + 
-" SELECT " + 
-" '" + req.params.city + "' as city," + 
-"  'MATHEMATICS' as subject," + 
-" (SELECT AVG(MATHEMATICS) FROM accreditation_rating_virginia_by_school_2014" + 
-" WHERE City = '" + req.params.city + "') as average_subject_city, " + 
-" (SELECT AVG(MATHEMATICS) FROM accreditation_rating_virginia_by_school_2014) as average_subject_state," + 
-" (" + 
-" (SELECT SUM(total_price_including_optional_support) FROM projects WHERE funding_status = 'completed' AND school_state = 'VA' AND school_city = '" + req.params.city + "' AND primary_focus_area = 'Math & Science') " + 
-"   / " + 
-" (SELECT SUM(total_price_including_optional_support) FROM projects WHERE school_state = 'VA' AND school_city = '" + req.params.city + "' AND primary_focus_area = 'Math & Science')" + 
-" ) as completion_percentage_city," + 
-"  (" + 
-" (SELECT SUM(total_price_including_optional_support) FROM projects WHERE funding_status = 'completed' AND school_state = 'VA' AND primary_focus_area = 'Math & Science' ) " + 
-"   / " + 
-" (SELECT SUM(total_price_including_optional_support) FROM projects WHERE school_state = 'VA' AND primary_focus_area = 'Math & Science')" + 
-" ) as completion_percentage_state" + 
-";" 
+                " '" + req.params.city + "' as city," + 
+                "  'ENGLISH' as subject," + 
+                " (SELECT AVG(ENGLISH) FROM accreditation_rating_virginia_by_school_2014" + 
+                " WHERE City = '" + req.params.city + "') as average_subject_city, " + 
+                " (SELECT AVG(ENGLISH) FROM accreditation_rating_virginia_by_school_2014) as average_subject_state," + 
+                " (" + 
+                " (SELECT SUM(total_price_including_optional_support) FROM projects WHERE funding_status = 'completed' AND school_state = 'VA' AND school_city = '" + req.params.city + "'  AND primary_focus_area = 'Literacy & Language') " + 
+                "   / " + 
+                " (SELECT SUM(total_price_including_optional_support) FROM projects WHERE school_state = 'VA' AND school_city = '" + req.params.city + "'  AND primary_focus_area = 'Literacy & Language')" + 
+                " ) as completion_percentage_city," + 
+                "  (" + 
+                " (SELECT SUM(total_price_including_optional_support) FROM projects WHERE funding_status = 'completed' AND school_state = 'VA' AND primary_focus_area = 'Literacy & Language') " + 
+                "   / " + 
+                " (SELECT SUM(total_price_including_optional_support) FROM projects WHERE school_state = 'VA' AND primary_focus_area = 'Literacy & Language')" + 
+                " ) as completion_percentage_state" + 
+                " " + 
+                " UNION" + 
+                " " + 
+                " SELECT " + 
+                " '" + req.params.city + "' as city," + 
+                "  'MATHEMATICS' as subject," + 
+                " (SELECT AVG(MATHEMATICS) FROM accreditation_rating_virginia_by_school_2014" + 
+                " WHERE City = '" + req.params.city + "') as average_subject_city, " + 
+                " (SELECT AVG(MATHEMATICS) FROM accreditation_rating_virginia_by_school_2014) as average_subject_state," + 
+                " (" + 
+                " (SELECT SUM(total_price_including_optional_support) FROM projects WHERE funding_status = 'completed' AND school_state = 'VA' AND school_city = '" + req.params.city + "' AND primary_focus_area = 'Math & Science') " + 
+                "   / " + 
+                " (SELECT SUM(total_price_including_optional_support) FROM projects WHERE school_state = 'VA' AND school_city = '" + req.params.city + "' AND primary_focus_area = 'Math & Science')" + 
+                " ) as completion_percentage_city," + 
+                "  (" + 
+                " (SELECT SUM(total_price_including_optional_support) FROM projects WHERE funding_status = 'completed' AND school_state = 'VA' AND primary_focus_area = 'Math & Science' ) " + 
+                "   / " + 
+                " (SELECT SUM(total_price_including_optional_support) FROM projects WHERE school_state = 'VA' AND primary_focus_area = 'Math & Science')" + 
+                " ) as completion_percentage_state" + 
+                ";" 
  
             connection.query( gnarly_query,
                 function(err, rows, fields) {
