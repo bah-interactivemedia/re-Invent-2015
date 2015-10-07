@@ -231,8 +231,6 @@ module.exports = function(app) {
                       "SELECT SUM(total_donations) as total_donations FROM projects;";
               }
 
-              console.log(queryString);
-
               // Bar chart
               connection.query(queryString,
                   function(err, rows, fields) {
@@ -245,7 +243,6 @@ module.exports = function(app) {
 
                       barChart.donations = totalDonations;
                       response.barChart = barChart;
-                      console.log(barChart);
 
                       // Line chart
                       connection.query("SELECT SUM(total_donations) as total_donations, SUM(total_price_excluding_optional_support) as total_requested_donations, year(date_posted) as projectYear FROM projects WHERE school_state = '"+ state + "' AND school_city = '"+ city + "' GROUP BY year(date_posted);",
@@ -264,7 +261,6 @@ module.exports = function(app) {
                               lineGraph.donations = totalDonations;
                               lineGraph.requestedDonations = totalRequestedDonations;
                               response.lineGraph = lineGraph;
-                              console.log(lineGraph);
 
                               response.subject = entity;
 

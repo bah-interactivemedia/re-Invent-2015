@@ -2,7 +2,7 @@
 
 <header class="hero-unit" id="firstQuestion">
   <div class="container">
-    <h2>What geographic location are the most interested in?</h2>
+    <h2>What geographic location are you the most interested in?</h2>
     <div class="row">
       <div class="col-lg-4 col-lg-offset-1">
         <div id="map"  style="width: 500px; height: 300px; margin-left:auto; margin-right:auto;"></div>
@@ -291,7 +291,7 @@ $("#selectCityLoad").hide();
     </div>
     <div class="row">
       <div class="col-lg-10 col-lg-offset-1">
-          <input id="witform" type="text" class="form-control" id="exampleInputEmail1" placeholder="Ex. I want to learn more about math" style="height:50px; border-radius:0px; font-size:26px; margin-bottom: 30px;">
+          <input id="witform" type="text" class="form-control" id="exampleInputEmail1" placeholder="Ex. I want to learn more about math" style="text-align: right; height:50px; border-radius:0px; font-size:26px; margin-bottom: 30px; ">
       </div>
     </div>
     <div class="row">
@@ -331,7 +331,7 @@ $("#selectCityLoad").hide();
       console.log(data);
       console.log('getting information');
 
-      renderStackedBar('#stackedBar', "Spending for "+data.subject ,['City', 'State', 'National'], [{
+      renderStackedBar('#stackedBar',data.subject ,['City', 'State', 'National'], [{
           name: data.subject,
           data: [
             Math.floor(data.barChart.donations[0]/data.barChart.donations[1]*100)+1,
@@ -344,8 +344,10 @@ $("#selectCityLoad").hide();
           Math.floor((data.barChart.donations[3]-data.barChart.donations[2])/data.barChart.donations[3]*100),
           Math.floor((data.barChart.donations[5]-data.barChart.donations[4])/data.barChart.donations[5]*100)]
       }]);
-      renderTimeSeriesForCity('#cityLineChart', data.lineGraph.years, donationSeries(data.lineGraph));
-                  $('html,body').animate({ scrollTop: $("#cityLineChart").offset().top });
+
+
+      renderTimeSeriesForCity('#cityLineChart', data.subject, data.lineGraph.years, donationSeries(data.lineGraph));
+      $('html,body').animate({ scrollTop: $("#cityLineChart").offset().top });
 
     });
     return false;
@@ -362,7 +364,7 @@ $("#selectCityLoad").hide();
             type: 'column'
         },
         title: {
-            text: title
+            text: "Percentage donations for <strong>" + title + "</strong>"
         },
         xAxis: {
             categories: categories
@@ -370,7 +372,7 @@ $("#selectCityLoad").hide();
         yAxis: {
             min: 0,
             title: {
-                text: 'Percentage of Spending'
+                text: 'Percentage of Donations'
             },
             stackLabels: {
                 enabled: true,
@@ -411,26 +413,27 @@ $("#selectCityLoad").hide();
     });
   }
 
-  function renderTimeSeriesForCity(container, categories, series) {
+  function renderTimeSeriesForCity(container, subject, categories, series) {
     $(container).highcharts({
       credits: {
             enabled: false
         },
         exporting: { enabled: false },
       title: {
-          text: '$ Spent in city over Years',
+          text: 'Donations for <strong>'+ subject +'</strong> in ' + selectedCity + ', ' + selectedState,
           x: -20 //center
       },
       xAxis: { categories: categories },
       yAxis: {
           title: {
-              text: 'Money Spent ($)'
+              text: 'Dollars'
           },
           plotLines: [{
               value: 0,
               width: 1,
               color: '#808080'
-          }]
+          }],
+          min: 0
       },
       tooltip: {
           valueSuffix: '$'
