@@ -50,7 +50,7 @@ module.exports = function(app) {
         .get(function(req, res){
             connection.query("SELECT DISTINCT school_city FROM projects WHERE school_state = '"+ req.params.state + "' ORDER BY school_city ASC;",
                 function(err, rows, fields) {
-                    res.send(JSON.stringify(rows));
+                    res.send(rows);
             });
         });
 
@@ -69,33 +69,17 @@ module.exports = function(app) {
                     var resource = [];
                     var totalDonations = [];
                     var totalRequestedDonations = [];
-                    var maxDonated = rows[0]["total_donations"];
-                    var maxRequested = rows[0]["total_requested_donations"];
-                    var maxDonatedName = rows[0]["primary_focus_area"];
-                    var maxRequestedName = rows[0]["primary_focus_area"];
 
                     for (var i = 0; i < rows.length; i++){
                         resource.push(rows[i]["resource_type"]);
                         totalDonations.push(Math.round(rows[i]["total_donations"]));
                         totalRequestedDonations.push(Math.round(rows[i]["total_requested_donations"]));
-
-                        if (rows[i]["total_donations"] > maxDonated) {
-                            maxDonated = rows[i]["total_donations"];
-                            maxDonatedName = rows[i]["resource_type"];
-                        }
-
-                        if (rows[i]["total_requested_donations"] > maxRequested){
-                            maxRequested = rows[i]["total_requested_donations"];
-                            maxRequestedName = rows[i]["resource_type"];
-                        }
                     }
 
                     var response = new Object();
                     response.categories = resource;
                     response.donations = totalDonations;
                     response.requestedDonations = totalRequestedDonations;
-                    response.maxDonated = maxDonatedName;
-                    response.maxRequested = maxRequestedName;
 
                     res.send(response);
                 });
@@ -108,33 +92,17 @@ module.exports = function(app) {
                     var subject = [];
                     var totalDonations = [];
                     var totalRequestedDonations = [];
-                    var maxDonated = rows[0]["total_donations"];
-                    var maxRequested = rows[0]["total_requested_donations"];
-                    var maxDonatedName = rows[0]["primary_focus_area"];
-                    var maxRequestedName = rows[0]["primary_focus_area"];
 
                     for (var i = 0; i < rows.length; i++){
-                        resource.push(rows[i]["primary_focus_area"]);
+                        subject.push(rows[i]["primary_focus_area"]);
                         totalDonations.push(Math.round(rows[i]["total_donations"]));
                         totalRequestedDonations.push(Math.round(rows[i]["total_requested_donations"]));
-
-                        if (rows[i]["total_donations"] > maxDonated) {
-                            maxDonated = rows[i]["total_donations"];
-                            maxDonatedName = rows[i]["primary_focus_area"];
-                        }
-
-                        if (rows[i]["total_requested_donations"] > maxRequested){
-                            maxRequested = rows[i]["total_requested_donations"];
-                            maxRequestedName = rows[i]["primary_focus_area"];
-                        }
                     }
 
                     var response = new Object();
                     response.categories = subject;
                     response.donations = totalDonations;
                     response.requestedDonations = totalRequestedDonations;
-                    response.maxDonated = maxDonatedName;
-                    response.maxRequested = maxRequestedName;
 
                     res.send(response);
                 });
@@ -149,31 +117,17 @@ module.exports = function(app) {
                     var totalRequestedDonations = [];
                     var maxDonated = rows[0]["total_donations"];
                     var maxRequested = rows[0]["total_requested_donations"];
-                    var maxDonatedName = rows[0]["resource_type"];
-                    var maxRequestedName = rows[0]["resource_type"];
 
                     for (var i = 0; i < rows.length; i++){
                         resource.push(rows[i]["resource_type"]);
                         totalDonations.push(Math.round(rows[i]["total_donations"]));
                         totalRequestedDonations.push(Math.round(rows[i]["total_requested_donations"]));
-
-                        if (rows[i]["total_donations"] > maxDonated) {
-                            maxDonated = rows[i]["total_donations"];
-                            maxDonatedName = rows[i]["resource_type"];
-                        }
-
-                        if (rows[i]["total_requested_donations"] > maxRequested){
-                            maxRequested = rows[i]["total_requested_donations"];
-                            maxRequestedName = rows[i]["resource_type"];
-                        }
                     }
 
                     var response = new Object();
                     response.categories = resource;
                     response.donations = totalDonations;
                     response.requestedDonations = totalRequestedDonations;
-                    response.maxDonated = maxDonatedName;
-                    response.maxRequested = maxRequestedName;
 
                     res.send(response);
                 });
@@ -186,33 +140,17 @@ module.exports = function(app) {
                     var subject = [];
                     var totalDonations = [];
                     var totalRequestedDonations = [];
-                    var maxDonated = rows[0]["total_donations"];
-                    var maxRequested = rows[0]["total_requested_donations"];
-                    var maxDonatedName = rows[0]["primary_focus_area"];
-                    var maxRequestedName = rows[0]["primary_focus_area"];
 
                     for (var i = 0; i < rows.length; i++){
-                        resource.push(rows[i]["primary_focus_area"]);
+                        subject.push(rows[i]["primary_focus_area"]);
                         totalDonations.push(Math.round(rows[i]["total_donations"]));
                         totalRequestedDonations.push(Math.round(rows[i]["total_requested_donations"]));
-
-                        if (rows[i]["total_donations"] > maxDonated) {
-                            maxDonated = rows[i]["total_donations"];
-                            maxDonatedName = rows[i]["primary_focus_area"];
-                        }
-
-                        if (rows[i]["total_requested_donations"] > maxRequested){
-                            maxRequested = rows[i]["total_requested_donations"];
-                            maxRequestedName = rows[i]["primary_focus_area"];
-                        }
                     }
 
                     var response = new Object();
                     response.categories = subject;
                     response.donations = totalDonations;
                     response.requestedDonations = totalRequestedDonations;
-                    response.maxDonated = maxDonatedName;
-                    response.maxRequested = maxRequestedName;
 
                     res.send(response);
                 });
