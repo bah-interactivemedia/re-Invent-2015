@@ -96,6 +96,7 @@ $("#selectCityLoad").hide();
     "WY": "Wyoming"
 },
   selectedCity = null;
+  selectedState= null;
 
   $('#map').usmap({
   // The click action
@@ -103,6 +104,8 @@ $("#selectCityLoad").hide();
     stateHoverStyles: {fill: '#F15E33'},
     click: function(event, data) {
       $('#clicked-state').text(states[data.name]);
+      selectedState = data.name;
+
       loadStateData(data.name);
       loadCitiesForState(data.name);
     }
@@ -160,6 +163,7 @@ $("#selectCityLoad").hide();
   }
 
   function loadCitiesForState(state) {
+
     $.ajax({
       url: "/getCitiesByState/" + state,
       context: document.body
@@ -179,6 +183,8 @@ $("#selectCityLoad").hide();
   }
 
   function citySelected(state, city) {
+    selectedCity = city;
+
     $('html,body').animate({ scrollTop: $("#resourceSpider").offset().top });
     $.ajax({
       url: "/getFundingByResource/" + state + "/" + city,
@@ -284,7 +290,7 @@ $("#selectCityLoad").hide();
     </div>
     <div class="row">
       <div class="col-lg-10 col-lg-offset-1">
-          <input id="witform" type="text" class="form-control" id="exampleInputEmail1" placeholder="Ex. I want to learn more about math" style="height:50px; border-radius:0px; font-size:26px; margin-bottom: 20px;">
+          <input id="witform" type="text" class="form-control" id="exampleInputEmail1" placeholder="Ex. I want to learn more about math" style="height:50px; border-radius:0px; font-size:26px; margin-bottom: 30px;">
       </div>
     </div>
     <div class="row">
@@ -312,7 +318,9 @@ $("#selectCityLoad").hide();
     $.ajax({
       type: "POST",
       url: "witcall",
-      data: {'input' :$('input#witform').val()}
+      data: {'input' :$('input#witform').val(),
+             'state': selectedState,
+             'city': selectedCity}
     }).done(function(data){
 
       $('#witLoad').hide();
@@ -322,12 +330,18 @@ $("#selectCityLoad").hide();
       console.log(data);
       console.log('getting information');
 
-      renderStackedBar('test', "Spending at different levels",['City', 'State', 'National'], [{
-          name: 'Math',
-          data: [80, 70, 75]
+      renderStackedBar('#stackedBar', "Spending for "+data.subject ,['City', 'State', 'National'], [{
+          name: data.subject,
+          data: [
+            Math.floor(data.barChart.donations[0]/data.barChart.donations[1]*100)+1,
+            Math.floor(data.barChart.donations[2]/data.barChart.donations[3]*100)+1,
+            Math.floor(data.barChart.donations[4]/data.barChart.donations[5]*100)+1]
       }, {
           name: 'Other Subjects',
-          data: [20, 30, 25]
+          data: [
+          Math.floor((data.barChart.donations[1]-data.barChart.donations[0])/data.barChart.donations[1]*100),
+          Math.floor((data.barChart.donations[3]-data.barChart.donations[2])/data.barChart.donations[3]*100),
+          Math.floor((data.barChart.donations[5]-data.barChart.donations[4])/data.barChart.donations[5]*100)]
       }]);
       renderTimeSeriesForCity('#cityLineChart', data.lineGraph.years, donationSeries(data.lineGraph));
     });
@@ -345,7 +359,7 @@ $("#selectCityLoad").hide();
             type: 'column'
         },
         title: {
-            text: 'Stacked column chart'
+            text: title
         },
         xAxis: {
             categories: categories
@@ -353,7 +367,7 @@ $("#selectCityLoad").hide();
         yAxis: {
             min: 0,
             title: {
-                text: 'Total fruit consumption'
+                text: 'Percentage of Spending'
             },
             stackLabels: {
                 enabled: true,
