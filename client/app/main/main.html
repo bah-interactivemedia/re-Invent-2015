@@ -4,21 +4,36 @@
   <div class="container">
     <h2>What geographic location are the most interested in?</h2>
     <div class="row">
-      <div class="col-lg-6">
+      <div class="col-lg-4 col-lg-offset-1">
         <div id="map"  style="width: 500px; height: 300px; margin-left:auto; margin-right:auto;"></div>
       </div>
-      <div class="col-lg-6" id="results" style="text-align:left; font-size: 60px;">
-        <div id="clicked-state" style=""></div>
+      <div class="col-lg-4 col-lg-offset-2" id="results" style="text-align:left; font-size: 60px;">
+        <div id="clicked-state" style="margin-top:20px;"></div>
         <!-- <input type="text" class="form-control" placeholder="Text input"> -->
+        <div id="selectCityLoad"class="sk-cube-grid" class="hide">
+          <div class="sk-cube sk-cube1"></div>
+          <div class="sk-cube sk-cube2"></div>
+          <div class="sk-cube sk-cube3"></div>
+          <div class="sk-cube sk-cube4"></div>
+          <div class="sk-cube sk-cube5"></div>
+          <div class="sk-cube sk-cube6"></div>
+          <div class="sk-cube sk-cube7"></div>
+          <div class="sk-cube sk-cube8"></div>
+          <div class="sk-cube sk-cube9"></div>
+        </div>
         <div id="cities" class="hide">
+          <h4>
           <select id="selectCity" placeholder="Select a city..."></select>
         </div>
       </div>
     </div>
   </div>
+
+
 </header>
 
 <script>
+$("#selectCityLoad").hide();
   var states = {
     "AL": "Alabama",
     "AK": "Alaska",
@@ -79,9 +94,7 @@
     "WV": "West Virginia",
     "WI": "Wisconsin",
     "WY": "Wyoming"
-};
-
-  selectedState = null;
+},
   selectedCity = null;
 
   $('#map').usmap({
@@ -90,7 +103,6 @@
     stateHoverStyles: {fill: '#F15E33'},
     click: function(event, data) {
       $('#clicked-state').text(states[data.name]);
-      selectedState = data.name;
       loadStateData(data.name);
       loadCitiesForState(data.name);
     }
@@ -98,10 +110,14 @@
 
   function loadStateData(state) {
     $('#cities').addClass('hide');
+    $("#selectCityLoad").show();
+
     $.ajax({
       url: "/getFundingByResource/" + state,
       context: document.body
     }).done(function(data) {
+      $("#selectCityLoad").hide();
+
       var series = [{
             name: 'Donations Received',
             data: data.donations,
@@ -151,7 +167,6 @@
   }
 
   function citySelected(state, city) {
-    selectedCity = city;
     $('html,body').animate({ scrollTop: $("#resourceSpider").offset().top });
     $.ajax({
       url: "/getFundingByResource/" + state + "/" + city,
@@ -166,6 +181,8 @@
             data: data.requestedDonations,
             pointPlacement: 'on'
         }];
+        $('#spiderGraphs').show();
+        $('#witformContainer').show();
         renderSpider("resourceSpider", "Resource Funding in " + city + ", " + states[state], data.categories, series);
     });
 
@@ -187,7 +204,8 @@
   }
 
   function renderSpider(id, title, categories, series) {
-    $("#witformContainer").show();
+    // $("#witformContainer").show();
+
     $("#"+id).highcharts({
       credits: {
             enabled: false
@@ -200,7 +218,7 @@
 
       title: {
           text: title,
-          x: -80
+          x: 0
       },
 
       pane: {
@@ -237,9 +255,9 @@
       },
 
       legend: {
-          align: 'right',
-          verticalAlign: 'top',
-          y: 70,
+          align: 'center',
+          verticalAlign: 'bottom',
+          y: 0,
           layout: 'vertical'
       },
 
@@ -248,7 +266,7 @@
   }
 </script>
 
-<div class="container">
+<div class="container" id="spiderGraphs" style="display:none;">
   <div class="row">
     <div id="resourceSpider" class="col-md-6 columns"></div>
     <div id="subjectSpider" class="col-md-6 columns"></div>
@@ -265,35 +283,50 @@
           <input id="witform" type="text" class="form-control" id="exampleInputEmail1" placeholder="Ex. I want to learn more about math" style="height:50px; border-radius:0px; font-size:26px; margin-bottom: 20px;">
       </div>
     </div>
+    <div class="row">
+      <div id="witLoad"class="sk-cube-grid" style="margin-bottom: 30px; display:none;">
+          <div class="sk-cube-2 sk-cube1"></div>
+          <div class="sk-cube-2 sk-cube2"></div>
+          <div class="sk-cube-2 sk-cube3"></div>
+          <div class="sk-cube-2 sk-cube4"></div>
+          <div class="sk-cube-2 sk-cube5"></div>
+          <div class="sk-cube-2 sk-cube6"></div>
+          <div class="sk-cube-2 sk-cube7"></div>
+          <div class="sk-cube-2 sk-cube8"></div>
+          <div class="sk-cube-2 sk-cube9"></div>
+      </div>
+    </div>
   </div>
 </div>
 
 <script>
   $('input#witform').keypress(function (e) {
+
   if (e.which == 13) {
+    $('#witLoad').show();
+
     $.ajax({
       type: "POST",
       url: "witcall",
-      data: {'input' :$('input#witform').val(),
-        'state': selectedState,
-        'city': selectedCity}
+      data: {'input' :$('input#witform').val()}
     }).done(function(data){
+      $('#witLoad').hide();
       console.log('getting information');
 
-      renderStackedBar('test', "Spending at different levels",['City', 'State', 'National'], [{
-          name: 'Math',
-          data: [80, 70, 75]
-      }, {
-          name: 'Other Subjects',
-          data: [20, 30, 25]
-      },]);
+
     });
     return false;
     }
   });
 
 
-
+renderStackedBar('test', "Spending at different levels",['City', 'State', 'National'], [{
+          name: 'Math',
+          data: [80, 70, 75]
+      }, {
+          name: 'Other Subjects',
+          data: [20, 30, 25]
+      },]);
   function renderStackedBar(id, title, categories, series) {
     $('#stackedBar').highcharts({
         credits: {
