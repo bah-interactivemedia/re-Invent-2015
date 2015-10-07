@@ -244,8 +244,15 @@ module.exports = function(app) {
                       barChart.donations = totalDonations;
                       response.barChart = barChart;
 
+                      var queryString = "";
+                      if (witIntent == 'subject'){
+                          queryString = "SELECT SUM(total_donations) as total_donations, SUM(total_price_excluding_optional_support) as total_requested_donations, year(date_posted) as projectYear FROM projects WHERE school_state = '"+ state + "' AND school_city = '"+ city + "' AND primary_focus_area LIKE '%" + entity + "%' GROUP BY year(date_posted);";
+                      } else {
+                          queryString = "SELECT SUM(total_donations) as total_donations, SUM(total_price_excluding_optional_support) as total_requested_donations, year(date_posted) as projectYear FROM projects WHERE school_state = '"+ state + "' AND school_city = '"+ city + "' AND resource_type LIKE '%" + entity + "%' GROUP BY year(date_posted);";
+                      }
+
                       // Line chart
-                      connection.query("SELECT SUM(total_donations) as total_donations, SUM(total_price_excluding_optional_support) as total_requested_donations, year(date_posted) as projectYear FROM projects WHERE school_state = '"+ state + "' AND school_city = '"+ city + "' GROUP BY year(date_posted);",
+                      connection.query(queryString,
                           function(err, rows, fields) {
                               var year = [];
                               var totalDonations = [];
