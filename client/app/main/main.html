@@ -12,7 +12,7 @@
         <div id="clicked-state" style=""></div>
         <!-- <input type="text" class="form-control" placeholder="Text input"> -->
         <div id="cities" class="hide">
-          <select id="selectCity"></select>
+          <select id="selectCity" placeholder="Select a city..."></select>
         </div>
       </div>
     </div>
@@ -80,7 +80,8 @@
     "WV": "West Virginia",
     "WI": "Wisconsin",
     "WY": "Wyoming"
-};
+},
+  selectedCity = null;
 
   $('#map').usmap({
   // The click action
@@ -93,6 +94,7 @@
   });
 
   function loadStateData(state) {
+    $('#cities').addClass('hide');
     $.ajax({
       url: "/getFundingByResource/" + state,
       context: document.body
@@ -106,7 +108,7 @@
             data: data.requestedDonations,
             pointPlacement: 'on'
         }];
-        renderSpider("resourceSpider", "Resource Funding", data.categories, series);
+        renderSpider("resourceSpider", "Resource Funding in " + states[state], data.categories, series);
     });
 
     $.ajax({
@@ -122,7 +124,7 @@
         data: data.requestedDonations,
         pointPlacement: 'on'
       }];
-      renderSpider("subjectSpider", "Subject Funding", data.categories, series);
+      renderSpider("subjectSpider", "Subject Funding in " + states[state], data.categories, series);
     });
   }
 
@@ -131,13 +133,51 @@
       url: "/getCitiesByState/" + state,
       context: document.body
     }).done(function(data) {
-      $('#selectCity').selectize({
+      if(selectedCity) {
+        selectedCity.destroy();
+      }
+      selectedCity = $('#selectCity').selectize({
         options: data,
         labelField: 'school_city',
         valueField: 'school_city',
-        searchField: 'school_city'
-      });
+        searchField: 'school_city',
+        onChange: function(city) { citySelected(state, city) }
+      })[0].selectize;
       $('#cities').removeClass('hide');
+    });
+  }
+
+  function citySelected(state, city) {
+    $.ajax({
+      url: "/getFundingByResource/" + state + "/" + city,
+      context: document.body
+    }).done(function(data) {
+      var series = [{
+            name: 'Total Donations',
+            data: data.donations,
+            pointPlacement: 'on'
+        }, {
+            name: 'Total Requested Donations',
+            data: data.requestedDonations,
+            pointPlacement: 'on'
+        }];
+        renderSpider("resourceSpider", states[state] + " funding by Resources", data.categories, series);
+    });
+
+    $.ajax({
+      url: "/getFundingBySubject/" + state + "/" + city,
+      context: document.body
+    }).done(function(data) {
+      var series = [{
+        name: 'Total Donations',
+        data: data.donations,
+        pointPlacement: 'on'
+      }, {
+        name: 'Total Requested Donations',
+        data: data.requestedDonations,
+        pointPlacement: 'on'
+      }];
+      renderSpider("subjectSpider", states[state] + " funding by Subjects", data.categories, series);
     });
   }
 
@@ -195,26 +235,6 @@
 
       series: series
     });
-
-  }
-  function demoSpider() {
-    var series = [{
-            name: 'Total Donations',
-            data: [43000, 19000, 60000, 35000, 17000],
-            pointPlacement: 'on'
-        }, {
-            name: 'Total Requested Donations',
-            data: [50000, 39000, 42000, 31000, 26000],
-            pointPlacement: 'on'
-        }],
-      categories = [
-        'Books',
-        'Technology',
-        'Supplies',
-        'Trips & visitors',
-        'Other'
-      ];
-    renderSpider("DonorsChoose", categories, series);
   }
 </script>
 
