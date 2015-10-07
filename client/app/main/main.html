@@ -24,6 +24,21 @@
         <div id="cities" class="hide">
           <h4>
           <select id="selectCity" placeholder="Select a city..."></select>
+          <div id="scores" class="hide">
+            <h4>Average ACT Scores</h4>
+            <table class="table" style="font-size:12px">
+                <thead>
+                    <tr>
+                        <th>Percent Tested</th><th>Composite</th><th>English</th><th>Math</th><th>Science</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr id="score-results">
+                        <td>57</td><td>21</td><td>20</td><td>20</td><td>20</td>
+                    </tr>
+                </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -108,8 +123,30 @@ $("#selectCityLoad").hide();
 
       loadStateData(data.name);
       loadCitiesForState(data.name);
+      loadScoresDataForState(data.name);
     }
   });
+
+  function loadScoresDataForState(state) {
+    $.ajax({
+      url: "/getTestScoresBy/" + state,
+      context: document.body
+    }).done(function(data) {
+      var scores = _.first(data);
+      if(scores) {
+        $('#scores').removeClass('hide');
+        $('#score-results').html(
+          "<td>" + scores['Percent of Graduates Tested'] + "</td>" +
+          "<td>" + scores['Average Composite Score'] + "</td>" +
+          "<td>" + scores['Average English Score'] + "</td>" +
+          "<td>" + scores['Average Math Score'] + "</td>" +
+          "<td>" + scores['Average Science Score'] + "</td>"
+        );
+      } else {
+        $('#scores').addClass('hide');
+      }
+    });
+  }
 
   function donationSeries(data) {
     return [{
